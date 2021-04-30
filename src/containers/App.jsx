@@ -1,39 +1,54 @@
-import React from 'react';
+import React,{useState, useEffect}  from 'react';
 import Header from '../components/Header';
 import Search from '../components/Search';
 import Categories from '../components/Categories';
 import Carousel from '../components/Carousel';
 import CarouselItem from '../components/CarouselItem';
 import Footer from '../components/Footer';
+import '../hooks/useInitialState'
 import '../assets/styles/App.scss';
 import '../assets/styles/Media.scss';
+import useInitialState from '../hooks/useInitialState';
 
-const App = () => (
+const API = 'http://localhost:3000/initalState';
+
+const App = () => {
+    
+    const initialState = useInitialState(API);
+
+    return(
     <div className="App">
         <Header />
         <Search />
-        <Categories title="Mi Lista">
-            <Carousel >
-                <CarouselItem />
-                <CarouselItem />
-                <CarouselItem />
-                <CarouselItem />
-            </Carousel>
-        </Categories>
+        {initialState.mylist.length > 0 &&
+            <Categories title="Mi Lista">
+            
+                <Carousel >
+                {initialState.mylist.map(item => 
+                    <CarouselItem  key={item.id} {...item}/>                
+                )}
+                </Carousel>
+            </Categories>        
+        }
         <Categories title="Tendencias">
             <Carousel >
-                <CarouselItem />
-                <CarouselItem />                
+                {initialState.trends.map(item => 
+                    <CarouselItem  key={item.id} {...item}/>                
+                )}
             </Carousel>
         </Categories>
         <Categories title="Originales de Platzy Video">
             <Carousel >
-                <CarouselItem />                
+                {initialState.originals.map(item => 
+                    <CarouselItem  key={item.id} {...item}/>                
+                )}              
             </Carousel>
         </Categories>
         <Footer />
         
     </div>
-);
+    )
+};
+
 
 export default App;
